@@ -8,10 +8,10 @@ import * as ast from "./ast.js"
 
 const aelGrammar = ohm.grammar(String.raw`Ael {
   Program   = Statement+
-  Statement = let id "=" Relop                  --variable
-            | id "=" Relop                      --assign
-            | print Relop                       --print
-  Relop    = Exp ("==") Exp					  --binary
+  Statement = let id "=" RelExp                  --variable
+            | id "=" RelExp                      --assign
+            | print RelExp                       --print
+  RelExp    = Exp ("==") Exp					  --binary
             | Exp
   Exp       = Exp ("+" | "-") Term            --binary
             | Term
@@ -51,7 +51,7 @@ const astBuilder = aelGrammar.createSemantics().addOperation("ast", {
   Statement_print(_print, expression) {
     return new ast.PrintStatement(expression.ast())
   },
-  Relop_binary(left, op, right) {
+  RelExp_binary(left, op, right) {
     return new ast.BinaryExpression(op.sourceString, left.ast(), right.ast())
   },
   Exp_binary(left, op, right) {
